@@ -1,0 +1,460 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Yet Another Todo",
+    "version": "1.0"
+  },
+  "host": "api-jvm-yata.azure-api.net",
+  "basePath": "/test",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [],
+  "produces": [],
+  "paths": {
+    "/admin/task": {
+      "get": {
+        "description": "List tasks as an admin",
+        "operationId": "admin_task",
+        "summary": "List tasks (admin)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/TaskQuery"
+            },
+            "examples": {
+              "application/json": {
+                "value": [
+                  {
+                    "description": "string",
+                    "done": true,
+                    "id": 0,
+                    "user": 0
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error",
+            "schema": {
+              "$ref": "#/definitions/HTTPError"
+            },
+            "examples": {
+              "application/json": {
+                "detail": {},
+                "message": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/user": {
+      "get": {
+        "description": "List users as an admin",
+        "operationId": "admin_user",
+        "summary": "List users (admin)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/UserQuery"
+            },
+            "examples": {
+              "application/json": {
+                "value": [
+                  {
+                    "email": "string",
+                    "external_id": "string",
+                    "id": 0
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error",
+            "schema": {
+              "$ref": "#/definitions/HTTPError"
+            },
+            "examples": {
+              "application/json": {
+                "detail": {},
+                "message": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task": {
+      "get": {
+        "description": "List Tasks",
+        "operationId": "user-task-list",
+        "summary": "List Tasks",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/TaskQuery"
+            }
+          },
+          "401": {
+            "description": "Authentication error",
+            "schema": {
+              "$ref": "#/definitions/HTTPError"
+            },
+            "examples": {
+              "application/json": {
+                "detail": {},
+                "message": "string"
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important"
+      },
+      "post": {
+        "description": "Create a task",
+        "operationId": "user-task-create",
+        "summary": "Create task",
+        "parameters": [
+          {
+            "name": "taskIn",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/TaskIn"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {},
+            "examples": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Authentication error",
+            "schema": {
+              "$ref": "#/definitions/HTTPError"
+            },
+            "examples": {
+              "application/json": {
+                "detail": {},
+                "message": "string"
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            },
+            "examples": {
+              "application/json": {
+                "detail": {
+                  "<location>": {
+                    "<field_name>": [
+                      "string"
+                    ]
+                  }
+                },
+                "message": "string"
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important"
+      }
+    },
+    "/task/{task}/complete": {},
+    "/webhook": {
+      "x-ms-notification-content": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "description"
+            },
+            "id": {
+              "type": "integer",
+              "format": "int32",
+              "description": "id"
+            },
+            "py/object": {
+              "type": "string",
+              "description": "py/object"
+            },
+            "user": {
+              "type": "integer",
+              "format": "int32",
+              "description": "user"
+            },
+            "done": {
+              "type": "integer",
+              "format": "int32",
+              "description": "done"
+            }
+          }
+        },
+        "description": "Task Details"
+      },
+      "post": {
+        "responses": {},
+        "summary": "Monitor Task",
+        "operationId": "monitor-task",
+        "x-ms-visibility": "important",
+        "x-ms-trigger": "single",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "url",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal",
+                  "title": ""
+                },
+                "type": {
+                  "type": "string",
+                  "description": "type",
+                  "title": "",
+                  "enum": [
+                    "created",
+                    "completed"
+                  ],
+                  "x-ms-visibility": "important"
+                }
+              },
+              "required": [
+                "url",
+                "type"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/webhook/{webhook}": {},
+    "/task/{id}/complete": {
+      "post": {
+        "description": "Complete a task",
+        "operationId": "user-task-complete",
+        "summary": "Complete task",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {},
+            "examples": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Authentication error",
+            "schema": {
+              "$ref": "#/definitions/HTTPError"
+            },
+            "examples": {
+              "application/json": {
+                "detail": {},
+                "message": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/HTTPError"
+            },
+            "examples": {
+              "application/json": {
+                "detail": {},
+                "message": "string"
+              }
+            }
+          }
+        },
+        "x-ms-visibility": "important"
+      }
+    }
+  },
+  "definitions": {
+    "HTTPError": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "type": "object"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "TaskIn": {
+      "required": [
+        "description"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "description": "string"
+      }
+    },
+    "TaskOut": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "done": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "integer"
+        }
+      }
+    },
+    "TaskQuery": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TaskOut"
+      }
+    },
+    "UserOut": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "external_id": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        }
+      }
+    },
+    "UserQuery": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserOut"
+          }
+        }
+      }
+    },
+    "ValidationError": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "type": "object",
+          "properties": {
+            "<location>": {
+              "type": "object",
+              "properties": {
+                "<field_name>": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "WebhookIn": {
+      "required": [
+        "type",
+        "url"
+      ],
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "created",
+            "completed"
+          ],
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "type": "created",
+        "url": "string"
+      }
+    }
+  },
+  "parameters": {},
+  "responses": {},
+  "securityDefinitions": {
+    "oauth2-auth": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/authorize",
+      "tokenUrl": "https://login.windows.net/common/oauth2/authorize",
+      "scopes": {
+        "api://709a97a6-fffc-43f5-8020-64925fc69760/impersonae": "api://709a97a6-fffc-43f5-8020-64925fc69760/impersonae"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth2-auth": [
+        "api://709a97a6-fffc-43f5-8020-64925fc69760/impersonae"
+      ]
+    }
+  ],
+  "tags": []
+}
